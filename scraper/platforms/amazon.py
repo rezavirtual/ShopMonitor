@@ -57,15 +57,26 @@ def _scrape_amazon_once(item: dict[str, Any], cookies: list[dict[str, Any]] | No
             return result
 
         if item.get("mode") == "search" or "/s?" in page.url:
-            first_link = page.locator("div[data-component-type='s-search-result'] h2 a").first
-            if first_link.count() > 0:
-                href = first_link.get_attribute("href")
-                if href:
-                    full_url = urllib.parse.urljoin("https://www.amazon.sg", href)
-                    page.goto(full_url, wait_until="domcontentloaded", timeout=35000)
-                    human_delay(1.8, 3.0)
+            for link_sel in [
+                "div[data-component-type='s-search-result'] h2 a",
+                "div[data-component-type='s-search-result'] a:has(h2)",
+                "div[data-component-type='s-search-result'] a.a-link-normal[href*='/dp/']",
+            ]:
+                first_link = page.locator(link_sel).first
+                if first_link.count() > 0:
+                    href = first_link.get_attribute("href")
+                    if href:
+                        full_url = urllib.parse.urljoin("https://www.amazon.sg", href)
+                        page.goto(full_url, wait_until="domcontentloaded", timeout=35000)
+                        human_delay(1.8, 3.0)
+                        break
 
         result.resolved_url = page.url
+
+        body_sample = (page.content() or "")[:6000].lower()
+        if "validatecaptcha" in page.url.lower() or "type the characters you see" in body_sample:
+            result.error = "Amazon SG bot/CAPTCHA check triggered; will retry next cycle."
+            return result
 
         for sel in [
             "#corePrice_feature_div .a-price .a-offscreen",

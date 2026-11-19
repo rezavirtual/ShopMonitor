@@ -80,6 +80,10 @@ def _scrape_shopee_once(item: dict[str, Any], cookies: list[dict[str, Any]] | No
                     human_delay(2.0, 3.2)
 
         result.resolved_url = page.url
+        if is_login_wall(page.url, page.content()[:4000]):
+            result.login_wall_detected = True
+            result.error = "Shopee anti-bot / login wall detected. Add SHOPEE_COOKIES_JSON secret for logged-in checks."
+            return result
 
         # Prefer intercepted PDP API payload if available
         pdp = captured_pdp.get("payload") or {}
