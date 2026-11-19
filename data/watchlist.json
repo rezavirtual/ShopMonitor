@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-19T20:46:37+08:00",
+  "updated_at": "2026-11-20T00:55:59+08:00",
   "cookie_status": {
     "shopee_sg": {
       "status": "unconfigured",
-      "last_checked": "2026-11-19T20:46:33+08:00",
+      "last_checked": "2026-11-20T00:55:55+08:00",
       "last_warned_at": null,
       "message": "No cookies configured; running public checks."
     },
@@ -16,9 +16,9 @@
     },
     "amazon_sg": {
       "status": "unconfigured",
-      "last_checked": null,
+      "last_checked": "2026-11-20T00:55:51+08:00",
       "last_warned_at": null,
-      "message": "No cookies configured yet; running public checks."
+      "message": "No cookies configured; running public checks."
     }
   },
   "items": [
@@ -36,8 +36,28 @@
       "duration_days": 42,
       "alert_on_new_voucher": false,
       "active": true,
-      "updated_at": "2026-11-19T12:49:44.009Z",
-      "created_at": "2026-11-19T12:49:44.009Z"
+      "updated_at": "2026-11-20T00:55:51+08:00",
+      "created_at": "2026-11-19T12:49:44.009Z",
+      "latest": {
+        "listed_price": 61.25,
+        "original_price": null,
+        "net_price": 61.25,
+        "vouchers": [],
+        "stock_status": "in_stock",
+        "seller_name": null,
+        "resolved_url": "https://www.amazon.sg/s?k=Calvin+Klein+Jeans+Men",
+        "last_checked": "2026-11-20T00:55:43+08:00",
+        "error": null,
+        "login_wall_detected": false
+      },
+      "price_history": [
+        {
+          "timestamp": "2026-11-20T00:55:43+08:00",
+          "listed_price": 61.25,
+          "net_price": 61.25,
+          "voucher_count": 0
+        }
+      ]
     },
     {
       "id": "ca2426ca-d7f3-45da-b994-2acb28d66c8a",
@@ -53,8 +73,28 @@
       "duration_days": 42,
       "alert_on_new_voucher": false,
       "active": true,
-      "updated_at": "2026-11-19T12:48:57.749Z",
-      "created_at": "2026-11-19T12:48:57.749Z"
+      "updated_at": "2026-11-20T00:55:55+08:00",
+      "created_at": "2026-11-19T12:48:57.749Z",
+      "latest": {
+        "listed_price": 74.17,
+        "original_price": 85.13,
+        "net_price": 74.17,
+        "vouchers": [],
+        "stock_status": "in_stock",
+        "seller_name": null,
+        "resolved_url": "https://www.amazon.sg/s?k=Levi%27s+Jeans+Men",
+        "last_checked": "2026-11-20T00:55:51+08:00",
+        "error": null,
+        "login_wall_detected": false
+      },
+      "price_history": [
+        {
+          "timestamp": "2026-11-20T00:55:51+08:00",
+          "listed_price": 74.17,
+          "net_price": 74.17,
+          "voucher_count": 0
+        }
+      ]
     },
     {
       "id": "c5ea172a-4f1a-4581-9a41-fd01cfeaf59c",
@@ -70,7 +110,7 @@
       "duration_days": 42,
       "alert_on_new_voucher": false,
       "active": true,
-      "updated_at": "2026-11-19T12:49:04.447Z",
+      "updated_at": "2026-11-20T00:55:59+08:00",
       "created_at": "2026-11-19T12:45:48.308Z",
       "latest": {
         "listed_price": null,
@@ -79,8 +119,8 @@
         "vouchers": [],
         "stock_status": "unknown",
         "seller_name": null,
-        "resolved_url": "https://shopee.sg/verify/traffic/error?home_url=https%3A%2F%2Fshopee.sg&is_logged_in=false&next=https%3A%2F%2Fshopee.sg%2FOptimum-Nutrition-Gold-Standard-100-Whey-Protein-5-LBs-Double-Rich-Chocolate-Primary-Source-Isolate-i.18254273.696085956%3FextraParams%3D%257B%2522display_model_id%2522%253A6287741898%252C%2522model_selection_logic%2522%253A3%257D%26image_ids%3Dsg-11134207-825b1-msalxf53f2807c&tracking_id=75995ca2f9e-ca72-40d8-9d77-ae2b6cd59950&type=4",
-        "last_checked": "2026-11-19T20:46:33+08:00",
+        "resolved_url": "https://shopee.sg/verify/traffic/error?home_url=https%3A%2F%2Fshopee.sg&is_logged_in=false&next=https%3A%2F%2Fshopee.sg%2FOptimum-Nutrition-Gold-Standard-100-Whey-Protein-5-LBs-Double-Rich-Chocolate-Primary-Source-Isolate-i.18254273.696085956%3FextraParams%3D%257B%2522display_model_id%2522%253A6287741898%252C%2522model_selection_logic%2522%253A3%257D%26image_ids%3Dsg-11134207-825b1-msalxf53f2807c&tracking_id=603fe851503-523a-4dba-a193-b3398ea82edb&type=4",
+        "last_checked": "2026-11-20T00:55:55+08:00",
         "error": null,
         "login_wall_detected": false
       }
