@@ -23,6 +23,23 @@
   },
   "items": [
     {
+      "id": "2f91bad2-a742-4808-a5c9-7e79703bdd5d",
+      "name": "CK Jeans",
+      "platform": "amazon_sg",
+      "mode": "search",
+      "url": "",
+      "store_name": "",
+      "keyword": "Calvin Klein Jeans Men",
+      "target_price": 60,
+      "start_date": "2026-11-19",
+      "end_date": "2026-12-31",
+      "duration_days": 42,
+      "alert_on_new_voucher": false,
+      "active": true,
+      "updated_at": "2026-11-19T12:49:44.009Z",
+      "created_at": "2026-11-19T12:49:44.009Z"
+    },
+    {
       "id": "ca2426ca-d7f3-45da-b994-2acb28d66c8a",
       "name": "Levi's Jeans",
       "platform": "amazon_sg",
