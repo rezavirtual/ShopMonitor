@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>SG Price & Voucher Monitor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .safe-top {
+      padding-top: max(0.75rem, env(safe-area-inset-top));
+    }
+    .safe-bottom {
+      padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+  <!-- Sticky Top Header -->
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200 safe-top">
+    <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+      <div class="min-w-0">
+        <h1 class="text-lg font-bold tracking-tight text-slate-900 truncate">SG Price Monitor</h1>
+        <p id="header-subtitle" class="text-xs text-slate-500 truncate">Shopee · Lazada · Amazon SG</p>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button id="check-now-btn" onclick="triggerWorkflowCheck()"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-sm font-semibold shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed">
+          <svg id="check-now-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span id="check-now-label">Check Now</span>
+        </button>
+        <button onclick="openSettingsModal()" aria-label="Settings"
+          class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto px-4 pt-4 pb-28 space-y-4">
+
+    <!-- Token Setup Banner (shown when PAT is not set) -->
+    <div id="token-banner" class="hidden rounded-2xl bg-amber-50 border border-amber-200 p-4 flex items-start justify-between gap-3">
+      <div class="text-sm text-amber-900">
+        <p class="font-semibold">GitHub Token Required for Editing & Check Now</p>
+        <p class="text-xs text-amber-800 mt-0.5">Add your Fine-Grained PAT in Settings (stored only in this browser's localStorage).</p>
+      </div>
+      <button onclick="openSettingsModal()" class="shrink-0 px-3 py-1.5 rounded-xl bg-amber-600 text-white text-xs font-semibold">
+        Setup
+      </button>
+    </div>
+
+    <!-- Workflow Run Status Banner -->
+    <div id="workflow-banner" class="hidden rounded-2xl bg-blue-50 border border-blue-200 p-3.5 flex items-center gap-3">
+      <div id="workflow-spinner" class="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin shrink-0"></div>
+      <div class="text-xs text-blue-900 min-w-0 flex-1">
+        <p id="workflow-status-text" class="font-semibold">Dispatching price check...</p>
+        <p id="workflow-subtext" class="text-blue-700 truncate"></p>
+      </div>
+      <a id="workflow-link" href="#" target="_blank" rel="noopener" class="hidden text-xs font-semibold text-blue-700 underline shrink-0">Logs</a>
+    </div>
+
+    <!-- Cookie Health Strip -->
+    <div id="cookie-strip" class="grid grid-cols-3 gap-2"></div>
+
+    <!-- Filter Controls -->
+    <div class="space-y-2">
+      <div class="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+        <button onclick="setStatusFilter('all')" data-status="all" class="status-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-900 text-white">All</button>
+        <button onclick="setStatusFilter('active')" data-status="active" class="status-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-white text-slate-600 border border-slate-200">Active</button>
+        <button onclick="setStatusFilter('target_hit')" data-status="target_hit" class="status-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-white text-slate-600 border border-slate-200">Target Hit</button>
+        <button onclick="setStatusFilter('expired')" data-status="expired" class="status-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-white text-slate-600 border border-slate-200">Expired</button>
+      </div>
+      <div class="flex gap-1.5 overflow-x-auto pb-1">
+        <button onclick="setPlatformFilter('all')" data-platform="all" class="platform-tab px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-200 text-slate-800">All Platforms</button>
+        <button onclick="setPlatformFilter('shopee_sg')" data-platform="shopee_sg" class="platform-tab px-2.5 py-1 rounded-lg text-xs font-medium bg-white text-slate-600 border border-slate-200">Shopee SG</button>
+        <button onclick="setPlatformFilter('lazada_sg')" data-platform="lazada_sg" class="platform-tab px-2.5 py-1 rounded-lg text-xs font-medium bg-white text-slate-600 border border-slate-200">Lazada SG</button>
+        <button onclick="setPlatformFilter('amazon_sg')" data-platform="amazon_sg" class="platform-tab px-2.5 py-1 rounded-lg text-xs font-medium bg-white text-slate-600 border border-slate-200">Amazon SG</button>
+      </div>
+    </div>
+
+    <!-- Watchlist Items Container -->
+    <div id="items-container" class="space-y-3">
+      <div class="text-center py-12 text-slate-400 text-sm">Loading watchlist...</div>
+    </div>
+
+  </main>
+
+  <!-- Floating Bottom Add Button -->
+  <div class="fixed bottom-0 inset-x-0 z-20 pointer-events-none safe-bottom">
+    <div class="max-w-2xl mx-auto px-4 flex justify-end">
+      <button onclick="openItemModal()"
+        class="pointer-events-auto inline-flex items-center gap-2 px-5 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-sm font-semibold shadow-lg transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        Add Item
+      </button>
+    </div>
+  </div>
+
+  <!-- Add / Edit Item Modal -->
+  <div id="item-modal" class="hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto p-5 space-y-4 safe-bottom">
+      <div class="flex items-center justify-between">
+        <h2 id="item-modal-title" class="text-lg font-bold">Add Monitored Item</h2>
+        <button onclick="closeItemModal()" class="p-2 rounded-full hover:bg-slate-100 text-slate-500">✕</button>
+      </div>
+
+      <form id="item-form" onsubmit="saveItemForm(event)" class="space-y-4">
+        <input type="hidden" id="item-id" />
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Item Name / Label</label>
+          <input id="item-name" type="text" required placeholder="e.g. Sony WH-1000XM5 Headphones"
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Platform</label>
+            <select id="item-platform"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="shopee_sg">Shopee SG</option>
+              <option value="lazada_sg">Lazada SG</option>
+              <option value="amazon_sg">Amazon SG</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Target Price (S$)</label>
+            <input id="item-target-price" type="number" step="0.01" min="0.01" required placeholder="399.00"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+
+        <!-- Lookup Mode Toggle -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Product Lookup Method</label>
+          <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
+            <button type="button" id="mode-btn-url" onclick="setLookupMode('url')"
+              class="py-2 rounded-lg text-xs font-semibold bg-white shadow-xs text-slate-900">Direct Product URL</button>
+            <button type="button" id="mode-btn-search" onclick="setLookupMode('search')"
+              class="py-2 rounded-lg text-xs font-semibold text-slate-600">Store + Keyword</button>
+          </div>
+        </div>
+
+        <div id="url-fields">
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Direct Product URL</label>
+          <input id="item-url" type="url" placeholder="https://shopee.sg/..."
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+
+        <div id="search-fields" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Store Name (Optional)</label>
+            <input id="item-store" type="text" placeholder="e.g. Sony Official Store"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Search Keyword</label>
+            <input id="item-keyword" type="text" placeholder="e.g. WH-1000XM5"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+
+        <!-- Monitoring Duration -->
+        <div class="grid grid-cols-3 gap-2.5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Start Date</label>
+            <input id="item-start-date" type="date" required onchange="syncDurationFromDates()"
+              class="w-full px-2.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Days</label>
+            <input id="item-days" type="number" min="1" max="365" value="30" oninput="syncEndDateFromDays()"
+              class="w-full px-2.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">End Date</label>
+            <input id="item-end-date" type="date" required onchange="syncDurationFromDates()"
+              class="w-full px-2.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+
+        <label class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
+          <input id="item-alert-voucher" type="checkbox" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500" />
+          <span class="text-xs font-medium text-slate-700">Alert on any new voucher/promo even if above target price</span>
+        </label>
+
+        <div class="flex gap-2.5 pt-2">
+          <button type="button" onclick="closeItemModal()"
+            class="flex-1 py-3 rounded-xl bg-slate-100 text-slate-700 text-sm font-semibold">Cancel</button>
+          <button type="submit" id="save-item-btn"
+            class="flex-1 py-3 rounded-xl bg-blue-600 text-white text-sm font-semibold shadow-sm">Save Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 safe-bottom">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold">GitHub API Settings</h2>
+        <button onclick="closeSettingsModal()" class="p-2 rounded-full hover:bg-slate-100 text-slate-500">✕</button>
+      </div>
+
+      <p class="text-xs text-slate-600 leading-relaxed">
+        Your Fine-Grained Personal Access Token is stored <strong>only in this browser's localStorage</strong>.
+        Required permissions: <code>Contents: Read &amp; Write</code> and <code>Actions: Read &amp; Write</code>.
+      </p>
+
+      <div class="space-y-3">
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Repo Owner</label>
+            <input id="cfg-owner" type="text" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Repo Name</label>
+            <input id="cfg-repo" type="text" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Branch</label>
+          <input id="cfg-branch" type="text" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">GitHub Fine-Grained PAT</label>
+          <input id="cfg-token" type="password" placeholder="github_pat_..."
+            class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-mono" />
+        </div>
+      </div>
+
+      <div id="settings-test-result" class="hidden text-xs p-2.5 rounded-xl"></div>
+
+      <div class="flex gap-2">
+        <button type="button" onclick="clearSettingsToken()"
+          class="px-3.5 py-2.5 rounded-xl bg-rose-50 text-rose-700 text-xs font-semibold">Clear Token</button>
+        <button type="button" onclick="saveSettings()"
+          class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold">Save & Test</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="hidden fixed top-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-medium shadow-lg"></div>
+
+  <script>
+    const WATCHLIST_PATH = "data/watchlist.json";
+    const WORKFLOW_FILE = "sg-price-monitor.yml";
+
+    const PLATFORM_META = {
+      shopee_sg: { label: "Shopee SG", badge: "bg-orange-100 text-orange-800 border-orange-200" },
+      lazada_sg: { label: "Lazada SG", badge: "bg-pink-100 text-pink-800 border-pink-200" },
+      amazon_sg: { label: "Amazon SG", badge: "bg-amber-100 text-amber-900 border-amber-200" }
+    };
+
+    let state = {
+      watchlist: { schema_version: 1, updated_at: null, cookie_status: {}, items: [] },
+      sha: null,
+      statusFilter: "all",
+      platformFilter: "all",
+      lookupMode: "url",
+      pollTimer: null
+    };
+
+    function getConfig() {
+      return {
+        owner: localStorage.getItem("sgpm_owner") || "rezavirtual",
+        repo: localStorage.getItem("sgpm_repo") || "ShopMonitor",
+        branch: localStorage.getItem("sgpm_branch") || "main",
+        token: localStorage.getItem("sgpm_token") || ""
+      };
+    }
+
+    function showToast(msg, duration = 3000) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.remove("hidden");
+      setTimeout(() => el.classList.add("hidden"), duration);
+    }
+
+    function encodeBase64Utf8(str) {
+      const bytes = new TextEncoder().encode(str);
+      let bin = "";
+      bytes.forEach(b => bin += String.fromCharCode(b));
+      return btoa(bin);
+    }
+
+    function decodeBase64Utf8(b64) {
+      const bin = atob(b64.replace(/\n/g, ""));
+      const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+      return new TextDecoder().decode(bytes);
+    }
+
+    function formatSgtTime(isoStr) {
+      if (!isoStr) return "Never";
+      try {
+        const d = new Date(isoStr);
+        return d.toLocaleString("en-SG", {
+          timeZone: "Asia/Singapore",
+          month: "short", day: "numeric",
+          hour: "2-digit", minute: "2-digit"
+        }) + " SGT";
+      } catch {
+        return isoStr;
+      }
+    }
+
+    function todaySgtStr() {
+      const now = new Date();
+      const sgt = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Singapore" }));
+      const y = sgt.getFullYear();
+      const m = String(sgt.getMonth() + 1).padStart(2, "0");
+      const d = String(sgt.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    async function githubFetch(path, options = {}) {
+      const cfg = getConfig();
+      const headers = {
+        "Accept": "application/vnd.github+json",
+        ...(options.headers || {})
+      };
+      if (cfg.token) {
+        headers["Authorization"] = `Bearer ${cfg.token}`;
+      }
+      const res = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}${path}`, {
+        ...options,
+        headers
+      });
+      return res;
+    }
+
+    async function loadWatchlist() {
+      const cfg = getConfig();
+      document.getElementById("token-banner").classList.toggle("hidden", Boolean(cfg.token));
+      try {
+        const res = await githubFetch(`/contents/${WATCHLIST_PATH}?ref=${encodeURIComponent(cfg.branch)}&_t=${Date.now()}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        state.sha = json.sha;
+        state.watchlist = JSON.parse(decodeBase64Utf8(json.content));
+        renderAll();
+      } catch (err) {
+        console.error(err);
+        document.getElementById("items-container").innerHTML = `
+          <div class="rounded-2xl bg-rose-50 border border-rose-200 p-4 text-xs text-rose-800">
+            Could not load <code>${WATCHLIST_PATH}</code> (${err.message}). Check your repo &amp; token in Settings.
+          </div>`;
+      }
+    }
+
+    async function commitWatchlist(commitMessage) {
+      const cfg = getConfig();
+      if (!cfg.token) {
+        openSettingsModal();
+        throw new Error("GitHub token is required.");
+      }
+
+      // Fetch latest SHA first to avoid 409 conflicts
+      const latestRes = await githubFetch(`/contents/${WATCHLIST_PATH}?ref=${encodeURIComponent(cfg.branch)}&_t=${Date.now()}`);
+      if (latestRes.ok) {
+        const latestJson = await latestRes.json();
+        state.sha = latestJson.sha;
+      }
+
+      const contentStr = JSON.stringify(state.watchlist, null, 2) + "\n";
+      const body = {
+        message: commitMessage,
+        content: encodeBase64Utf8(contentStr),
+        branch: cfg.branch,
+        ...(state.sha ? { sha: state.sha } : {})
+      };
+
+      const putRes = await githubFetch(`/contents/${WATCHLIST_PATH}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      if (!putRes.ok) {
+        const errData = await putRes.json().catch(() => ({}));
+        throw new Error(errData.message || `HTTP ${putRes.status}`);
+      }
+      const putJson = await putRes.json();
+      state.sha = putJson.content?.sha || state.sha;
+      renderAll();
+    }
+
+    function isItemExpired(item) {
+      if (!item.end_date) return false;
+      return todaySgtStr() > item.end_date;
+    }
+
+    function isTargetHit(item) {
+      const latest = item.latest || {};
+      const target = Number(item.target_price);
+      if (!target) return false;
+      const eff = latest.net_price ?? latest.listed_price;
+      return (latest.listed_price != null && latest.listed_price <= target) ||
+             (eff != null && eff <= target);
+    }
+
+    function renderCookieStrip() {
+      const cs = state.watchlist.cookie_status || {};
+      const strip = document.getElementById("cookie-strip");
+      strip.innerHTML = Object.entries(PLATFORM_META).map(([key, meta]) => {
+        const info = cs[key] || { status: "unconfigured" };
+        let dot = "bg-slate-400";
+        let label = "Public";
+        if (info.status === "ok") { dot = "bg-emerald-500"; label = "Cookies OK"; }
+        else if (info.status === "expired") { dot = "bg-rose-500"; label = "Expired"; }
+        else if (info.status === "invalid") { dot = "bg-amber-500"; label = "Invalid"; }
+        return `
+          <div class="rounded-xl bg-white border border-slate-200 px-2.5 py-2 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full ${dot} shrink-0"></span>
+            <div class="min-w-0">
+              <p class="text-[11px] font-semibold text-slate-800 truncate">${meta.label.replace(" SG", "")}</p>
+              <p class="text-[10px] text-slate-500 truncate">${label}</p>
+            </div>
+          </div>`;
+      }).join("");
+    }
+
+    function renderAll() {
+      const updated = state.watchlist.updated_at;
+      document.getElementById("header-subtitle").textContent = updated
+        ? `Updated ${formatSgtTime(updated)}`
+        : "Shopee · Lazada · Amazon SG";
+
+      renderCookieStrip();
+
+      const items = state.watchlist.items || [];
+      const filtered = items.filter(item => {
+        if (state.platformFilter !== "all" && item.platform !== state.platformFilter) return false;
+        const expired = isItemExpired(item) || item.active === false;
+        const hit = isTargetHit(item);
+        if (state.statusFilter === "active" && expired) return false;
+        if (state.statusFilter === "expired" && !expired) return false;
+        if (state.statusFilter === "target_hit" && !hit) return false;
+        return true;
+      });
+
+      const container = document.getElementById("items-container");
+      if (!filtered.length) {
+        container.innerHTML = `
+          <div class="rounded-2xl bg-white border border-slate-200 p-8 text-center space-y-2">
+            <p class="text-sm font-semibold text-slate-700">No monitored items match this view</p>
+            <p class="text-xs text-slate-500">Tap "+ Add Item" below to start tracking prices &amp; vouchers in SGD.</p>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const meta = PLATFORM_META[item.platform] || { label: item.platform, badge: "bg-slate-100 text-slate-800" };
+        const latest = item.latest || {};
+        const expired = isItemExpired(item) || item.active === false;
+        const hit = isTargetHit(item);
+        const listed = latest.listed_price != null ? `S$${Number(latest.listed_price).toFixed(2)}` : "—";
+        const net = latest.net_price != null ? `S$${Number(latest.net_price).toFixed(2)}` : listed;
+        const target = `S$${Number(item.target_price).toFixed(2)}`;
+        const vouchers = latest.vouchers || [];
+        const link = latest.resolved_url || item.url || "#";
+
+        let statusPill = `<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>`;
+        if (expired) {
+          statusPill = `<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">Expired</span>`;
+        } else if (hit) {
+          statusPill = `<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-600 text-white">Target Hit!</span>`;
+        }
+
+        const stockBadge = latest.stock_status === "out_of_stock"
+          ? `<span class="text-rose-600 font-semibold">Out of Stock</span>`
+          : latest.stock_status === "in_stock"
+            ? `<span class="text-emerald-600 font-semibold">In Stock</span>`
+            : `<span class="text-slate-400">Stock: Unknown</span>`;
+
+        const vouchersHtml = vouchers.length
+          ? `<div class="pt-2 border-t border-slate-100 space-y-1">
+              <p class="text-[11px] font-semibold text-slate-600">Detected Vouchers (${vouchers.length})</p>
+              <div class="flex flex-wrap gap-1.5">
+                ${vouchers.slice(0, 4).map(v => `
+                  <span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] ${v.eligible ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-slate-50 text-slate-500 border border-slate-200"}">
+                    🎟️ ${escapeHtml(v.description)}${v.code ? ` <code class="font-bold">${escapeHtml(v.code)}</code>` : ""}
+                  </span>
+                `).join("")}
+              </div>
+            </div>`
+          : "";
+
+        return `
+          <article class="rounded-2xl bg-white border ${hit && !expired ? "border-blue-300 ring-1 ring-blue-100" : "border-slate-200"} p-4 shadow-xs space-y-3">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0 space-y-1">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold border ${meta.badge}">${meta.label}</span>
+                  ${statusPill}
+                </div>
+                <h3 class="text-sm font-bold text-slate-900 leading-snug">${escapeHtml(item.name)}</h3>
+                <p class="text-[11px] text-slate-500 truncate">
+                  ${escapeHtml(latest.seller_name || item.store_name || (item.mode === "search" ? `Search: ${item.keyword}` : "Direct URL"))}
+                </p>
+              </div>
+              <div class="flex items-center gap-1 shrink-0">
+                <button onclick="triggerWorkflowCheck('${item.id}')" title="Check this item now"
+                  class="p-2 rounded-xl hover:bg-slate-100 text-blue-600 text-xs font-semibold">↻</button>
+                <button onclick="openItemModal('${item.id}')" title="Edit"
+                  class="p-2 rounded-xl hover:bg-slate-100 text-slate-600 text-xs">✎</button>
+                <button onclick="deleteItem('${item.id}')" title="Delete"
+                  class="p-2 rounded-xl hover:bg-rose-50 text-rose-600 text-xs">✕</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 bg-slate-50 rounded-xl p-2.5 text-center">
+              <div>
+                <p class="text-[10px] text-slate-500">Listed</p>
+                <p class="text-sm font-bold text-slate-800">${listed}</p>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-500">After Voucher</p>
+                <p class="text-sm font-bold ${hit ? "text-blue-600" : "text-emerald-700"}">${net}</p>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-500">Target</p>
+                <p class="text-sm font-bold text-slate-700">${target}</p>
+              </div>
+            </div>
+
+            ${vouchersHtml}
+
+            ${latest.error ? `<p class="text-[11px] text-rose-600 bg-rose-50 px-2.5 py-1.5 rounded-lg">${escapeHtml(latest.error)}</p>` : ""}
+
+            <div class="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+              <div class="flex items-center gap-2">
+                ${stockBadge}
+                <span>·</span>
+                <span>${formatSgtTime(latest.last_checked)}</span>
+              </div>
+              ${link !== "#" ? `<a href="${escapeHtml(link)}" target="_blank" rel="noopener" class="font-semibold text-blue-600 hover:underline">Open ↗</a>` : ""}
+            </div>
+          </article>`;
+      }).join("");
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function setStatusFilter(status) {
+      state.statusFilter = status;
+      document.querySelectorAll(".status-tab").forEach(btn => {
+        const active = btn.dataset.status === status;
+        btn.className = active
+          ? "status-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-900 text-white"
+          : "status-tab px-3 py-1.5 rounded-full text-xs font-semibold bg-white text-slate-600 border border-slate-200";
+      });
+      renderAll();
+    }
+
+    function setPlatformFilter(platform) {
+      state.platformFilter = platform;
+      document.querySelectorAll(".platform-tab").forEach(btn => {
+        const active = btn.dataset.platform === platform;
+        btn.className = active
+          ? "platform-tab px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-200 text-slate-800"
+          : "platform-tab px-2.5 py-1 rounded-lg text-xs font-medium bg-white text-slate-600 border border-slate-200";
+      });
+      renderAll();
+    }
+
+    function setLookupMode(mode) {
+      state.lookupMode = mode;
+      const isUrl = mode === "url";
+      document.getElementById("url-fields").classList.toggle("hidden", !isUrl);
+      document.getElementById("search-fields").classList.toggle("hidden", isUrl);
+      document.getElementById("mode-btn-url").className = isUrl
+        ? "py-2 rounded-lg text-xs font-semibold bg-white shadow-xs text-slate-900"
+        : "py-2 rounded-lg text-xs font-semibold text-slate-600";
+      document.getElementById("mode-btn-search").className = !isUrl
+        ? "py-2 rounded-lg text-xs font-semibold bg-white shadow-xs text-slate-900"
+        : "py-2 rounded-lg text-xs font-semibold text-slate-600";
+    }
+
+    function syncEndDateFromDays() {
+      const startVal = document.getElementById("item-start-date").value;
+      const days = parseInt(document.getElementById("item-days").value, 10);
+      if (!startVal || !days || days < 1) return;
+      const d = new Date(startVal + "T00:00:00");
+      d.setDate(d.getDate() + days);
+      document.getElementById("item-end-date").value = d.toISOString().slice(0, 10);
+    }
+
+    function syncDurationFromDates() {
+      const startVal = document.getElementById("item-start-date").value;
+      const endVal = document.getElementById("item-end-date").value;
+      if (!startVal || !endVal) return;
+      const diff = Math.round((new Date(endVal) - new Date(startVal)) / 86400000);
+      if (diff >= 1) document.getElementById("item-days").value = diff;
+    }
+
+    function openItemModal(itemId = null) {
+      const modal = document.getElementById("item-modal");
+      const today = todaySgtStr();
+      if (itemId) {
+        const item = (state.watchlist.items || []).find(i => i.id === itemId);
+        if (!item) return;
+        document.getElementById("item-modal-title").textContent = "Edit Monitored Item";
+        document.getElementById("item-id").value = item.id;
+        document.getElementById("item-name").value = item.name || "";
+        document.getElementById("item-platform").value = item.platform || "shopee_sg";
+        document.getElementById("item-target-price").value = item.target_price || "";
+        setLookupMode(item.mode || "url");
+        document.getElementById("item-url").value = item.url || "";
+        document.getElementById("item-store").value = item.store_name || "";
+        document.getElementById("item-keyword").value = item.keyword || "";
+        document.getElementById("item-start-date").value = item.start_date || today;
+        document.getElementById("item-end-date").value = item.end_date || today;
+        document.getElementById("item-days").value = item.duration_days || 30;
+        document.getElementById("item-alert-voucher").checked = Boolean(item.alert_on_new_voucher);
+      } else {
+        document.getElementById("item-modal-title").textContent = "Add Monitored Item";
+        document.getElementById("item-form").reset();
+        document.getElementById("item-id").value = "";
+        setLookupMode("url");
+        document.getElementById("item-start-date").value = today;
+        document.getElementById("item-days").value = 30;
+        syncEndDateFromDays();
+      }
+      modal.classList.remove("hidden");
+    }
+
+    function closeItemModal() {
+      document.getElementById("item-modal").classList.add("hidden");
+    }
+
+    async function saveItemForm(e) {
+      e.preventDefault();
+      const btn = document.getElementById("save-item-btn");
+      btn.disabled = true;
+      btn.textContent = "Saving...";
+
+      try {
+        const existingId = document.getElementById("item-id").value;
+        const nowIso = new Date().toISOString();
+        const payload = {
+          id: existingId || (crypto.randomUUID ? crypto.randomUUID() : `item_${Date.now()}`),
+          name: document.getElementById("item-name").value.trim(),
+          platform: document.getElementById("item-platform").value,
+          mode: state.lookupMode,
+          url: state.lookupMode === "url" ? document.getElementById("item-url").value.trim() : "",
+          store_name: state.lookupMode === "search" ? document.getElementById("item-store").value.trim() : "",
+          keyword: state.lookupMode === "search" ? document.getElementById("item-keyword").value.trim() : "",
+          target_price: parseFloat(document.getElementById("item-target-price").value),
+          start_date: document.getElementById("item-start-date").value,
+          end_date: document.getElementById("item-end-date").value,
+          duration_days: parseInt(document.getElementById("item-days").value, 10) || 30,
+          alert_on_new_voucher: document.getElementById("item-alert-voucher").checked,
+          active: true,
+          updated_at: nowIso
+        };
+
+        if (payload.mode === "url" && !payload.url) {
+          throw new Error("Please enter a Direct Product URL.");
+        }
+        if (payload.mode === "search" && !payload.keyword) {
+          throw new Error("Please enter a Search Keyword.");
+        }
+
+        const items = state.watchlist.items || [];
+        const idx = items.findIndex(i => i.id === payload.id);
+        if (idx >= 0) {
+          items[idx] = { ...items[idx], ...payload };
+        } else {
+          payload.created_at = nowIso;
+          items.unshift(payload);
+        }
+        state.watchlist.items = items;
+
+        await commitWatchlist(idx >= 0 ? `ui: update ${payload.name}` : `ui: add ${payload.name}`);
+        closeItemModal();
+        showToast("Saved to GitHub watchlist!");
+      } catch (err) {
+        alert("Save failed: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Save Item";
+      }
+    }
+
+    async function deleteItem(itemId) {
+      if (!confirm("Delete this monitored item?")) return;
+      try {
+        const items = state.watchlist.items || [];
+        const target = items.find(i => i.id === itemId);
+        state.watchlist.items = items.filter(i => i.id !== itemId);
+        await commitWatchlist(`ui: remove ${target?.name || itemId}`);
+        showToast("Item deleted");
+      } catch (err) {
+        alert("Delete failed: " + err.message);
+      }
+    }
+
+    async function triggerWorkflowCheck(itemId = "") {
+      const cfg = getConfig();
+      if (!cfg.token) {
+        openSettingsModal();
+        return;
+      }
+
+      const btn = document.getElementById("check-now-btn");
+      const banner = document.getElementById("workflow-banner");
+      const statusText = document.getElementById("workflow-status-text");
+      const subtext = document.getElementById("workflow-subtext");
+      const link = document.getElementById("workflow-link");
+
+      btn.disabled = true;
+      banner.classList.remove("hidden");
+      statusText.textContent = itemId ? "Triggering single-item check..." : "Triggering full price & voucher check...";
+      subtext.textContent = "Dispatching GitHub Actions workflow...";
+      link.classList.add("hidden");
+
+      try {
+        const dispatchTime = Date.now();
+        const res = await githubFetch(`/actions/workflows/${WORKFLOW_FILE}/dispatches`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ref: cfg.branch,
+            inputs: itemId ? { item_id: itemId } : {}
+          })
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || `HTTP ${res.status}`);
+        }
+        pollWorkflowStatus(dispatchTime);
+      } catch (err) {
+        banner.classList.add("hidden");
+        btn.disabled = false;
+        alert("Could not trigger workflow: " + err.message);
+      }
+    }
+
+    function pollWorkflowStatus(sinceMs) {
+      if (state.pollTimer) clearInterval(state.pollTimer);
+      const statusText = document.getElementById("workflow-status-text");
+      const subtext = document.getElementById("workflow-subtext");
+      const link = document.getElementById("workflow-link");
+      const banner = document.getElementById("workflow-banner");
+      const btn = document.getElementById("check-now-btn");
+
+      let attempts = 0;
+      state.pollTimer = setInterval(async () => {
+        attempts++;
+        try {
+          const res = await githubFetch(`/actions/workflows/${WORKFLOW_FILE}/runs?per_page=5&_t=${Date.now()}`);
+          if (!res.ok) return;
+          const data = await res.json();
+          const run = (data.workflow_runs || []).find(r => new Date(r.created_at).getTime() >= sinceMs - 15000);
+          if (!run) {
+            subtext.textContent = "Waiting for GitHub Actions runner to queue...";
+            return;
+          }
+
+          link.href = run.html_url;
+          link.classList.remove("hidden");
+          statusText.textContent = `Workflow: ${run.status.replace("_", " ")}`;
+          subtext.textContent = run.conclusion ? `Result: ${run.conclusion}` : "Scraping prices & vouchers...";
+
+          if (run.status === "completed") {
+            clearInterval(state.pollTimer);
+            btn.disabled = false;
+            await loadWatchlist();
+            showToast(run.conclusion === "success" ? "Prices & vouchers refreshed!" : `Run finished: ${run.conclusion}`);
+            setTimeout(() => banner.classList.add("hidden"), 5000);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+        if (attempts > 60) {
+          clearInterval(state.pollTimer);
+          btn.disabled = false;
+        }
+      }, 5000);
+    }
+
+    function openSettingsModal() {
+      const cfg = getConfig();
+      document.getElementById("cfg-owner").value = cfg.owner;
+      document.getElementById("cfg-repo").value = cfg.repo;
+      document.getElementById("cfg-branch").value = cfg.branch;
+      document.getElementById("cfg-token").value = cfg.token;
+      document.getElementById("settings-test-result").classList.add("hidden");
+      document.getElementById("settings-modal").classList.remove("hidden");
+    }
+
+    function closeSettingsModal() {
+      document.getElementById("settings-modal").classList.add("hidden");
+    }
+
+    function clearSettingsToken() {
+      localStorage.removeItem("sgpm_token");
+      document.getElementById("cfg-token").value = "";
+      showToast("Token removed from browser");
+      loadWatchlist();
+    }
+
+    async function saveSettings() {
+      localStorage.setItem("sgpm_owner", document.getElementById("cfg-owner").value.trim() || "rezavirtual");
+      localStorage.setItem("sgpm_repo", document.getElementById("cfg-repo").value.trim() || "ShopMonitor");
+      localStorage.setItem("sgpm_branch", document.getElementById("cfg-branch").value.trim() || "main");
+      localStorage.setItem("sgpm_token", document.getElementById("cfg-token").value.trim());
+
+      const resBox = document.getElementById("settings-test-result");
+      resBox.classList.remove("hidden", "bg-emerald-50", "text-emerald-800", "bg-rose-50", "text-rose-800");
+      try {
+        const res = await githubFetch("");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const repo = await res.json();
+        resBox.classList.add("bg-emerald-50", "text-emerald-800");
+        resBox.textContent = `Connected to ${repo.full_name} (Push: ${repo.permissions?.push ? "Yes" : "No"})`;
+        await loadWatchlist();
+      } catch (err) {
+        resBox.classList.add("bg-rose-50", "text-rose-800");
+        resBox.textContent = `Connection failed: ${err.message}`;
+      }
+    }
+
+    loadWatchlist();
+  </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "updated_at": null,
+  "cookie_status": {
+    "shopee_sg": {
+      "status": "unconfigured",
+      "last_checked": null,
+      "last_warned_at": null,
+      "message": "No cookies configured yet; running public checks."
+    },
+    "lazada_sg": {
+      "status": "unconfigured",
+      "last_checked": null,
+      "last_warned_at": null,
+      "message": "No cookies configured yet; running public checks."
+    },
+    "amazon_sg": {
+      "status": "unconfigured",
+      "last_checked": null,
+      "last_warned_at": null,
+      "message": "No cookies configured yet; running public checks."
+    }
+  },
+  "items": []
+}
