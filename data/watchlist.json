@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-22T12:10:26+08:00",
+  "updated_at": "2026-11-22T12:11:54+08:00",
   "cookie_status": {
     "shopee_sg": {
       "status": "expired",
-      "last_checked": "2026-11-22T12:10:13+08:00",
+      "last_checked": "2026-11-22T12:11:43+08:00",
       "last_warned_at": "2026-11-22T12:10:26+08:00",
       "message": "Login wall detected; cookies may be expired."
     },
@@ -140,7 +140,7 @@
       "duration_days": 42,
       "alert_on_new_voucher": false,
       "active": true,
-      "updated_at": "2026-11-22T12:10:26+08:00",
+      "updated_at": "2026-11-22T12:11:54+08:00",
       "created_at": "2026-11-19T12:45:48.308Z",
       "latest": {
         "listed_price": null,
@@ -149,8 +149,8 @@
         "vouchers": [],
         "stock_status": "unknown",
         "seller_name": null,
-        "resolved_url": "https://shopee.sg/verify/traffic/error?home_url=https%3A%2F%2Fshopee.sg&is_logged_in=false&next=https%3A%2F%2Fshopee.sg%2FOptimum-Nutrition-Gold-Standard-100-Whey-Protein-5-LBs-Double-Rich-Chocolate-Primary-Source-Isolate-i.18254273.696085956%3FextraParams%3D%257B%2522display_model_id%2522%253A6287741898%252C%2522model_selection_logic%2522%253A3%257D%26image_ids%3Dsg-11134207-825b1-msalxf53f2807c&tracking_id=89373739f5f-e07a-46c7-9cde-530fbab87073&type=4",
-        "last_checked": "2026-11-22T12:10:20+08:00",
+        "resolved_url": "https://shopee.sg/verify/traffic/error?home_url=https%3A%2F%2Fshopee.sg&is_logged_in=false&next=https%3A%2F%2Fshopee.sg%2FOptimum-Nutrition-Gold-Standard-100-Whey-Protein-5-LBs-Double-Rich-Chocolate-Primary-Source-Isolate-i.18254273.696085956%3FextraParams%3D%257B%2522display_model_id%2522%253A6287741898%252C%2522model_selection_logic%2522%253A3%257D%26image_ids%3Dsg-11134207-825b1-msalxf53f2807c&tracking_id=433cd6ff0ce-0b85-4a17-8992-a31c85882ed0&type=4",
+        "last_checked": "2026-11-22T12:11:49+08:00",
         "error": "Shopee anti-bot / login wall detected. Add SHOPEE_COOKIES_JSON secret for logged-in checks.",
         "login_wall_detected": true
       }
