@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-25T00:56:38+08:00",
+  "updated_at": "2026-11-25T04:44:45+08:00",
   "cookie_status": {
     "shopee_sg": {
       "status": "expired",
@@ -16,7 +16,7 @@
     },
     "amazon_sg": {
       "status": "unconfigured",
-      "last_checked": "2026-11-25T00:56:30+08:00",
+      "last_checked": "2026-11-25T04:44:36+08:00",
       "last_warned_at": null,
       "message": "No cookies configured; running public checks."
     }
@@ -36,7 +36,7 @@
       "duration_days": 42,
       "alert_on_new_voucher": false,
       "active": true,
-      "updated_at": "2026-11-25T00:56:30+08:00",
+      "updated_at": "2026-11-25T04:44:36+08:00",
       "created_at": "2026-11-19T12:49:44.009Z",
       "latest": {
         "listed_price": null,
@@ -46,7 +46,7 @@
         "stock_status": "unknown",
         "seller_name": null,
         "resolved_url": "https://www.amazon.sg/s?k=Calvin+Klein+Jeans+Men",
-        "last_checked": "2026-11-25T00:56:25+08:00",
+        "last_checked": "2026-11-25T04:44:32+08:00",
         "error": null,
         "login_wall_detected": false
       },
@@ -121,7 +121,7 @@
       "duration_days": 42,
       "alert_on_new_voucher": false,
       "active": true,
-      "updated_at": "2026-11-25T00:56:38+08:00",
+      "updated_at": "2026-11-25T04:44:45+08:00",
       "created_at": "2026-11-19T12:48:57.749Z",
       "latest": {
         "listed_price": 86.29,
@@ -142,8 +142,8 @@
         ],
         "stock_status": "in_stock",
         "seller_name": "Amazon Germany",
-        "resolved_url": "https://www.amazon.sg/Levis-Mens-Athletic-Midnight-32x34/dp/B00MGBJ552/ref=sr_1_1?dib=eyJ2IjoiMSJ9.NypPEzra4a-YErOG-jaC-ZQVdsShLLcQ4U34Ra-dvPp8WXeoAEjT7u2_88l_A8YL0_On2teGh0YhC_Dpnd0eu4i6Wu9Ej9HUO7zC3MiNsurdBXjp_-Kf3KfIjcKxZQQNoZUdakdL4OIRKKFxHkQSU6_YEc29_IS2Vynwz0Q3C2aWXmncGVcPYWM6MW9-dVDblVAz4WaB5ZVW-_iZh2-ACxt1v53dCVePrSYsyKnm4r-z89TJrdQ6E6TLwzdguMu4h8aEpAfPuaaWB1cCryEprhpTx2p06-VevZv8A-oaTmo.PIIxQIqja53X4fhUoManTR0WbsM8rWYWwwGBXMw5cNI&dib_tag=se&keywords=Levi%27s%2BJeans%2BMen&qid=1795539390&sr=8-1&th=1&psc=1",
-        "last_checked": "2026-11-25T00:56:30+08:00",
+        "resolved_url": "https://www.amazon.sg/Levis-Mens-Athletic-Midnight-32x34/dp/B00MGBJ552/ref=sr_1_1?dib=eyJ2IjoiMSJ9.NypPEzra4a-YErOG-jaC-ZQVdsShLLcQ4U34Ra-dvPrRFqpQykJwcBICnAp7M6OS01-L8wgWvAQaNca-f_0sqrL8Sz2I9xE4soOrJsGfoBjdBXjp_-Kf3KfIjcKxZQQNoZUdakdL4OIRKKFxHkQSU6_YEc29_IS2Vynwz0Q3C2aWXmncGVcPYWM6MW9-dVDblVAz4WaB5ZVW-_iZh2-ACxt1v53dCVePrSYsyKnm4r-WXYZVTRM0XGfkpGd5V7KKh7I01J-Lby6mwXKamLyRehpTx2p06-VevZv8A-oaTmo.Q8UTl5g9B8l-Hsg-6Cn2WlYCFVxwmP2IEynBwQcydtg&dib_tag=se&keywords=Levi%27s%2BJeans%2BMen&qid=1795553077&sr=8-1&th=1&psc=1",
+        "last_checked": "2026-11-25T04:44:36+08:00",
         "error": null,
         "login_wall_detected": false
       },
@@ -180,6 +180,12 @@
         },
         {
           "timestamp": "2026-11-25T00:56:30+08:00",
+          "listed_price": 86.29,
+          "net_price": 77.66,
+          "voucher_count": 1
+        },
+        {
+          "timestamp": "2026-11-25T04:44:36+08:00",
           "listed_price": 86.29,
           "net_price": 77.66,
           "voucher_count": 1
