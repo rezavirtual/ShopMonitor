@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-25T12:58:44+08:00",
+  "updated_at": "2026-11-25T16:56:38+08:00",
   "cookie_status": {
     "shopee_sg": {
       "status": "expired",
@@ -16,7 +16,7 @@
     },
     "amazon_sg": {
       "status": "unconfigured",
-      "last_checked": "2026-11-25T12:58:40+08:00",
+      "last_checked": "2026-11-25T16:56:31+08:00",
       "last_warned_at": null,
       "message": "No cookies configured; running public checks."
     }
@@ -36,17 +36,17 @@
       "duration_days": 42,
       "alert_on_new_voucher": false,
       "active": true,
-      "updated_at": "2026-11-25T12:58:40+08:00",
+      "updated_at": "2026-11-25T16:56:31+08:00",
       "created_at": "2026-11-19T12:49:44.009Z",
       "latest": {
-        "listed_price": null,
+        "listed_price": 56.85,
         "original_price": null,
-        "net_price": null,
+        "net_price": 56.85,
         "vouchers": [],
-        "stock_status": "unknown",
-        "seller_name": null,
-        "resolved_url": "https://www.amazon.sg/s?k=Calvin+Klein+Jeans+Men",
-        "last_checked": "2026-11-25T12:58:36+08:00",
+        "stock_status": "in_stock",
+        "seller_name": "Amazon US",
+        "resolved_url": "https://www.amazon.sg/DKNY-Jeans-Men-Premium-Stretch/dp/B0BPYYGXKJ/ref=sr_1_1?dib=eyJ2IjoiMSJ9.15sJVZkn_Fw50QawVe2IhQRc8Ta8_Iw_5hPkk2atJu14KG2yd4HmscWPqHU-te8dL8-8xRjxgvWpBs32aEE2is6oOpQVYEDrvt3WW87y-j-wa1zYwZ4I-fcc2_eir9RZ6TihbHrq1dsWetZ9mCX8Mr0xXgMhkZvJmWClx7qOOig1eCe9Zw7KFLXnCk74YlhRvxORRFK9t_enuxG8QMgcyiAXR4zs6AWDWjGldThg0mZm-p97Q5ijV4RiAUjRiKHZ7Bi76rGoCbVu_rp6CqcU5QHj7C-A-Z1r-fZy-Wc3VWw.nJ2hYDTwf7TKBklSiEivCPVVvJJq85o8qhohDcRkyfA&dib_tag=se&keywords=Calvin%2BKlein%2BJeans%2BMen&qid=1795596983&sr=8-1&th=1&psc=1",
+        "last_checked": "2026-11-25T16:56:21+08:00",
         "error": null,
         "login_wall_detected": false
       },
@@ -98,6 +98,12 @@
           "listed_price": 56.85,
           "net_price": 56.85,
           "voucher_count": 0
+        },
+        {
+          "timestamp": "2026-11-25T16:56:21+08:00",
+          "listed_price": 56.85,
+          "net_price": 56.85,
+          "voucher_count": 0
         }
       ],
       "last_alerted_state": {
@@ -121,17 +127,29 @@
       "duration_days": 42,
       "alert_on_new_voucher": false,
       "active": true,
-      "updated_at": "2026-11-25T12:58:44+08:00",
+      "updated_at": "2026-11-25T16:56:38+08:00",
       "created_at": "2026-11-19T12:48:57.749Z",
       "latest": {
-        "listed_price": null,
+        "listed_price": 86.29,
         "original_price": null,
-        "net_price": null,
-        "vouchers": [],
-        "stock_status": "unknown",
-        "seller_name": null,
-        "resolved_url": "https://www.amazon.sg/s?k=Levi%27s+Jeans+Men",
-        "last_checked": "2026-11-25T12:58:40+08:00",
+        "net_price": 77.66,
+        "vouchers": [
+          {
+            "description": "Save 10% on 2 when you buy 3 Shop items",
+            "discount_type": "percent",
+            "discount_value": 10.0,
+            "min_spend": null,
+            "max_cap": null,
+            "code": null,
+            "source": "product",
+            "eligible": true,
+            "savings_sgd": 8.63
+          }
+        ],
+        "stock_status": "in_stock",
+        "seller_name": "Amazon Germany",
+        "resolved_url": "https://www.amazon.sg/Levis-Mens-Athletic-Midnight-32x34/dp/B00MGBJ552/ref=sr_1_1?dib=eyJ2IjoiMSJ9.NypPEzra4a-YErOG-jaC-ZQVdsShLLcQ4U34Ra-dvPrRFqpQykJwcBICnAp7M6OS01-L8wgWvAQaNca-f_0sqrL8Sz2I9xE4soOrJsGfoBj2tJ_XrwzWXWQB6w9To8KHDmC0CVHxuu086Ev_jqndQ7m4Ym5tf9TeBHXoRufl0DeWXmncGVcPYWM6MW9-dVDbAjmnb7DabanLLNUhTnN_AAFzz_b8rfsaM3sYvB07DchSoW73ZejYXnG-ClpJyYA7WQwWkLyxonmRhPPIWURTrRy6ulb7IIAHc3qgeRFsPO0._oCnrueOtnwRdgsVq3Hq9U90hZwaLGm5RYX4HmnnCs0&dib_tag=se&keywords=Levi%27s%2BJeans%2BMen&qid=1795596991&sr=8-1&th=1&psc=1",
+        "last_checked": "2026-11-25T16:56:31+08:00",
         "error": null,
         "login_wall_detected": false
       },
@@ -174,6 +192,12 @@
         },
         {
           "timestamp": "2026-11-25T04:44:36+08:00",
+          "listed_price": 86.29,
+          "net_price": 77.66,
+          "voucher_count": 1
+        },
+        {
+          "timestamp": "2026-11-25T16:56:31+08:00",
           "listed_price": 86.29,
           "net_price": 77.66,
           "voucher_count": 1
