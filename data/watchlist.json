@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-26T16:54:20+08:00",
+  "updated_at": "2026-11-26T21:00:01+08:00",
   "cookie_status": {
     "shopee_sg": {
       "status": "expired",
@@ -16,7 +16,7 @@
     },
     "amazon_sg": {
       "status": "unconfigured",
-      "last_checked": "2026-11-26T16:54:16+08:00",
+      "last_checked": "2026-11-26T20:59:58+08:00",
       "last_warned_at": null,
       "message": "No cookies configured; running public checks."
     }
@@ -36,17 +36,17 @@
       "duration_days": 42,
       "alert_on_new_voucher": false,
       "active": true,
-      "updated_at": "2026-11-26T16:54:16+08:00",
+      "updated_at": "2026-11-26T20:59:58+08:00",
       "created_at": "2026-11-19T12:49:44.009Z",
       "latest": {
-        "listed_price": null,
+        "listed_price": 56.85,
         "original_price": null,
-        "net_price": null,
+        "net_price": 56.85,
         "vouchers": [],
-        "stock_status": "unknown",
-        "seller_name": null,
-        "resolved_url": "https://www.amazon.sg/s?k=Calvin+Klein+Jeans+Men",
-        "last_checked": "2026-11-26T16:54:12+08:00",
+        "stock_status": "in_stock",
+        "seller_name": "Amazon US",
+        "resolved_url": "https://www.amazon.sg/DKNY-Jeans-Men-Premium-Stretch/dp/B0BPYYGXKJ/ref=sr_1_1?dib=eyJ2IjoiMSJ9.tY-MumQCKjXlkrWz1cwYk5ny0zYyfrmBhnrCEjq1CB76rq1TC_3_epGsZEmUPiASaXnQXlY-MB0QzuyV-ykfLBDDc-hUcSDPS9SAg2SO4TMPLGtISEddUoEFbV8wczgPY6A3JkN8hd2OAB1XzNR-vKxeC3Vh8NT_4_88U_WZZwE8XeLkAt9Z04csPcWXAH8mqNbREpIBwaaiEIhdDCxwxSYt-RpONhXacLh95KgeCeqxBPPMYuTHoXQGEjWyLy9YKcDUTuuProHAzL0xPe6j_EgsQ0sEip8nTw2DwM6ufHQ.UIDtvDQ7jlNpuroC7XXRwAq1DKQzU1J7Of6s3ViDLxg&dib_tag=se&keywords=Calvin%2BKlein%2BJeans%2BMen&qid=1795697991&sr=8-1&th=1&psc=1",
+        "last_checked": "2026-11-26T20:59:50+08:00",
         "error": null,
         "login_wall_detected": false
       },
@@ -104,6 +104,12 @@
           "listed_price": 56.85,
           "net_price": 56.85,
           "voucher_count": 0
+        },
+        {
+          "timestamp": "2026-11-26T20:59:50+08:00",
+          "listed_price": 56.85,
+          "net_price": 56.85,
+          "voucher_count": 0
         }
       ],
       "last_alerted_state": {
@@ -127,7 +133,7 @@
       "duration_days": 42,
       "alert_on_new_voucher": false,
       "active": true,
-      "updated_at": "2026-11-26T16:54:20+08:00",
+      "updated_at": "2026-11-26T21:00:01+08:00",
       "created_at": "2026-11-19T12:48:57.749Z",
       "latest": {
         "listed_price": null,
@@ -137,7 +143,7 @@
         "stock_status": "unknown",
         "seller_name": null,
         "resolved_url": "https://www.amazon.sg/s?k=Levi%27s+Jeans+Men",
-        "last_checked": "2026-11-26T16:54:16+08:00",
+        "last_checked": "2026-11-26T20:59:58+08:00",
         "error": null,
         "login_wall_detected": false
       },
